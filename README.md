@@ -157,7 +157,7 @@ Default: **10 products per page**
 ![Get Products](docs/postman-example-get.png)
 
 ### Get Product By ID
-![Get Product](docs/postman-example-get-id.png)
+![Get Product](docs/postman-example-get_id.png)
 
 ### Create Product
 ![Create Product](docs/postman-example-create.png)
