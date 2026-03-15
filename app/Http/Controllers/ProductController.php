@@ -8,23 +8,38 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     // POST api/products
-    public function index()
+    public function index(Request $request)
     {
-        return Product::all();
+        $query = Product::query();
+
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->serch . '%');
+        }
+
+        return Product::paginate(10);
     }
 
     // GET api/products
     public function store(Request $request)
     {
-        $product = Product::create($request->all());
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'description' => 'nullable|string'
+        ]);
 
-        return response()->json($product, 201);
+        $product = Product::create($validated);
+
+        return response()->json([
+            'message' => 'Product created successfully',
+            'data' => $product
+        ], 201);
     }
 
     // GET api/products{id}
     public function show($id)
     {
-        return Product::findOrFail($id);
+        // return Product::findOrFail($id);
     }
 
     // PUT api/products{id}
