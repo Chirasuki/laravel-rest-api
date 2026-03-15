@@ -151,11 +151,23 @@ Default: **10 products per page**
 
 ---
 
-# 🧪 API Example (Postman)
+## 🧪 API Example (Postman)
 
-Example API response tested using Postman
+### Get All Products
+![Get Products](docs/postman-example-get.png)
 
-![API Example](docs/postman-example.png)
+### Get Product By ID
+![Get Product](docs/postman-example-get-id.png)
+
+### Create Product
+![Create Product](docs/postman-example-create.png)
+
+### Update Product
+![Update Product](docs/postman-example-update.png)
+
+### Delete Product
+![Delete Product](docs/postman-example-delete.png)
+
 
 ---
 
