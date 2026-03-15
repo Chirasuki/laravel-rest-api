@@ -7,19 +7,40 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    // POST api/products
+    // GET api/products
     public function index(Request $request)
     {
         $query = Product::query();
 
-        if ($request->search) {
-            $query->where('name', 'like', '%' . $request->serch . '%');
+        // Search by name
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        return Product::paginate(10);
+        // Minimum price filter
+        if ($request->min_price) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        // Maximum price filter
+        if ($request->max_price) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // Sorting
+        // Minimum to Maximum
+        if ($request->sort == 'price_asc') {
+            $query->orderBy('price', 'asc');
+        }
+        // Maximum to Minimum
+        if ($request->sort == 'price_desc') {
+            $query->orderBy('price', 'desc');
+        }
+
+        return $query->paginate(10);
     }
 
-    // GET api/products
+    // POST api/products
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -36,27 +57,32 @@ class ProductController extends Controller
         ], 201);
     }
 
-    // GET api/products{id}
-    public function show($id)
+    // GET api/products/{id}
+    public function show(Product $product)
     {
-        // return Product::findOrFail($id);
+        return response()->json($product);
     }
 
-    // PUT api/products{id}
+    // PUT api/products/{id}
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
 
-        $product->update([
-            'name' => $request->name,
-            'price' => $request->price,
-            'description' => $request->description
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'description' => 'nullable|string'
         ]);
 
-        return response()->json($product);
+        $product->update($validated);
+
+        return response()->json([
+            'message' => 'Product updated successfully',
+            'data' => $product
+        ]);
     }
 
-    // DELETE api/products{id}
+    // DELETE api/products/{id}
     public function destroy($id)
     {
         Product::destroy($id);
